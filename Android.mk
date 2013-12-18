@@ -17,6 +17,23 @@ LOCAL_STATIC_LIBRARIES := libbluez
 include $(BUILD_EXECUTABLE)
 
 include $(CLEAR_VARS)
+
+LOCAL_MODULE := btmon
+LOCAL_SRC_FILES := monitor/main.c monitor/mainloop.c \
+		monitor/display.c  monitor/hcidump.c \
+		monitor/btsnoop.c monitor/control.c \
+		monitor/packet.c monitor/vendor.c \
+		monitor/lmp.c  monitor/l2cap.c \
+		monitor/uuid.c monitor/sdp.c \
+		monitor/crc.c monitor/ll.c
+LOCAL_CFLAGS += -DVERSION=\"5.10\"
+LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/lib
+LOCAL_MODULE_TAGS := optional
+LOCAL_STATIC_LIBRARIES := libbluez
+include $(BUILD_EXECUTABLE)
+
+include $(CLEAR_VARS)
+
 LOCAL_MODULE := libbluez
 LOCAL_SRC_FILES := lib/bluetooth.c lib/hci.c lib/sdp.c
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/lib
