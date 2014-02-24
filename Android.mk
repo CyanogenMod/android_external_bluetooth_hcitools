@@ -34,6 +34,18 @@ include $(BUILD_EXECUTABLE)
 
 include $(CLEAR_VARS)
 
+LOCAL_MODULE := hciattach
+LOCAL_SRC_FILES := hciattach.c hciattach.h \
+		hciattach_st.c hciattach_ti.c \
+		hciattach_tialt.c hciattach_ath3k.c \
+		hciattach_qualcomm.c hciattach_intel.c
+LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/lib
+LOCAL_MODULE_TAGS := optional
+LOCAL_STATIC_LIBRARIES := libbluez
+include $(BUILD_EXECUTABLE)
+
+include $(CLEAR_VARS)
+
 LOCAL_MODULE := libbluez
 LOCAL_SRC_FILES := lib/bluetooth.c lib/hci.c lib/sdp.c
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/lib
