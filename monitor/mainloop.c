@@ -36,7 +36,7 @@
 #include <sys/timerfd.h>
 #include <sys/epoll.h>
 
-#include "poll.h"
+#include "compat.h"
 #include "mainloop.h"
 
 #define MAX_EPOLL_EVENTS 10
