@@ -54,7 +54,8 @@ include $(BUILD_STATIC_LIBRARY)
 HCITOOLS_GPL_SRC_TARGET: $(HOST_OUT_EXECUTABLES)/pigz
 	@echo "Copying hcitools source code to system/vendor/gpl"
 	@mkdir -p $(TARGET_OUT)/vendor/gpl
-	tar --exclude=".git" -cf  $(TARGET_OUT)/vendor/gpl/hcitools.tar external/bluetooth/hcitools
+	find external/bluetooth/hcitools | grep -v "\.git" | sort > $(TARGET_OUT)/../hcitools.files
+	tar --exclude=".git" --no-recursion -S -T $(TARGET_OUT)/../hcitools.files --mtime="01/01/2014" -cf  $(TARGET_OUT)/vendor/gpl/hcitools.tar
 	$(HOST_OUT_EXECUTABLES)/pigz -9 -f --no-time -R $(TARGET_OUT)/vendor/gpl/hcitools.tar
 
 ALL_DEFAULT_INSTALLED_MODULES += HCITOOLS_GPL_SRC_TARGET
