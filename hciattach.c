@@ -1142,7 +1142,7 @@ struct uart_t uart[] = {
 				FLOW_CTL, DISABLE_PM, NULL, bcm2035, NULL  },
 
 	/* Broadcom BCM43XX */
-	{ "bcm43xx",    0x0000, 0x0000, HCI_UART_H4,   115200, 460800,
+	{ "bcm43xx",    0x0000, 0x0000, HCI_UART_H4,   115200, 3000000,
 				FLOW_CTL, DISABLE_PM, NULL, bcm43xx, NULL  },
 
 	{ "ath3k",    0x0000, 0x0000, HCI_UART_ATH3K, 115200, 115200,
