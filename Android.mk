@@ -43,14 +43,3 @@ LOCAL_SRC_FILES += lib/bluetooth.c lib/hci.c lib/sdp.c
 LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/lib
 LOCAL_MODULE_TAGS := optional
 include $(BUILD_EXECUTABLE)
-
-include $(CLEAR_VARS)
-
-HCITOOLS_GPL_SRC_TARGET: $(HOST_OUT_EXECUTABLES)/pigz
-	@echo "Copying hcitools source code to system/vendor/gpl"
-	@mkdir -p $(TARGET_OUT)/vendor/gpl
-	find external/bluetooth/hcitools | grep -v "\.git" | sort > $(TARGET_OUT)/../hcitools.files
-	tar --exclude=".git" --no-recursion -S -T $(TARGET_OUT)/../hcitools.files --mtime="01/01/2014" -cf  $(TARGET_OUT)/vendor/gpl/hcitools.tar
-	$(HOST_OUT_EXECUTABLES)/pigz -9 -f --no-time -R $(TARGET_OUT)/vendor/gpl/hcitools.tar
-
-ALL_DEFAULT_INSTALLED_MODULES += HCITOOLS_GPL_SRC_TARGET
