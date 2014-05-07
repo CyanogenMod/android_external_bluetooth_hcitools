@@ -85,7 +85,7 @@ static void sig_alarm(int sig)
 	exit(1);
 }
 
-static int uart_speed(int s)
+int uart_speed(int s)
 {
 	switch (s) {
 	case 9600:
@@ -326,6 +326,11 @@ static int qualcomm(int fd, struct uart_t *u, struct termios *ti)
 static int intel(int fd, struct uart_t *u, struct termios *ti)
 {
 	return intel_init(fd, u->init_speed, &u->speed, ti);
+}
+
+static int bcm43xx(int fd, struct uart_t *u, struct termios *ti)
+{
+	return bcm43xx_init(fd, u->speed, ti, u->bdaddr);
 }
 
 static int read_check(int fd, void *buf, int count)
@@ -1135,6 +1140,10 @@ struct uart_t uart[] = {
 	/* Broadcom BCM2035 */
 	{ "bcm2035",    0x0A5C, 0x2035, HCI_UART_H4,   115200, 460800,
 				FLOW_CTL, DISABLE_PM, NULL, bcm2035, NULL  },
+
+	/* Broadcom BCM43XX */
+	{ "bcm43xx",    0x0000, 0x0000, HCI_UART_H4,   115200, 3000000,
+				FLOW_CTL, DISABLE_PM, NULL, bcm43xx, NULL  },
 
 	{ "ath3k",    0x0000, 0x0000, HCI_UART_ATH3K, 115200, 115200,
 			FLOW_CTL, DISABLE_PM, NULL, ath3k_ps, ath3k_pm  },
