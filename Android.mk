@@ -39,7 +39,7 @@ LOCAL_SRC_FILES := hciattach.c hciattach.h \
 		hciattach_st.c hciattach_ti.c \
 		hciattach_tialt.c hciattach_ath3k.c \
 		hciattach_qualcomm.c hciattach_intel.c \
-		hciattach_bcm43xx.c
+		hciattach_bcm43xx.c hciattach_rtk.c \
 LOCAL_SRC_FILES += lib/bluetooth.c lib/hci.c lib/sdp.c
 LOCAL_CFLAGS += -DFIRMWARE_DIR=\"/etc/firmware\"
 LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/lib
