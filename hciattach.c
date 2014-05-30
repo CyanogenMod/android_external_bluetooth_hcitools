@@ -1181,11 +1181,11 @@ struct uart_t uart[] = {
 //Realtek_add_start
 	/* Realtek Bluetooth H4*/
 	/* H4 will set 115200 baudrate and flow control enable by default*/
-	{ "rtk_h4",     0x0000, 0x0000, HCI_UART_H4,  115200,  115200, FLOW_CTL, NULL, realtek_init, realtek_post},
+	{ "rtk_h4",     0x0000, 0x0000, HCI_UART_H4,  115200,  115200, FLOW_CTL, DISABLE_PM, NULL, realtek_init, realtek_post},
 	/* Realtek Bluetooth H5*/
 	/* H5 will set 921600 baudrate and flow control disable by default */
 	/* H5 will be realtek's recommanded protocol */
-	{ "rtk_h5",     0x0000, 0x0000, HCI_UART_3WIRE, 921600,921600, 0,        NULL, realtek_init, realtek_post},
+	{ "rtk_h5",     0x0000, 0x0000, HCI_UART_3WIRE, 115200,115200, 0, DISABLE_PM, NULL, realtek_init, realtek_post},
 //Realtek_add_end
 
 	{ NULL, 0 }

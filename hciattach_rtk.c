@@ -42,7 +42,7 @@
 #include <fcntl.h>
 
 #include <signal.h>
-#define Config_Android 0 /*1 for android; 0 for Linux*/
+#define Config_Android 1 /*1 for android; 0 for Linux*/
 
 #if Config_Android   //for Android
 #include <bluetooth/bluetooth.h>
@@ -206,8 +206,8 @@ int gFinalSpeed = 0;
 #if Config_Android //for Android
 #define FIRMWARE_DIRECTORY_OLD "/system/etc/firmware/rtl8723as/"
 #define BT_CONFIG_DIRECTORY_OLD "/system/etc/firmware/rtl8723as/"
-#define FIRMWARE_DIRECTORY "/system/etc/firmware/rtlbt/"
-#define BT_CONFIG_DIRECTORY "/system/etc/firmware/rtlbt/"
+#define FIRMWARE_DIRECTORY "/system/etc/firmware/bt/"
+#define BT_CONFIG_DIRECTORY "/system/etc/firmware/bt/"
 
 #else //for Linux 
 #define FIRMWARE_DIRECTORY_OLD "/system/etc/firmware/rtl8723as/"
@@ -1489,9 +1489,11 @@ RT_U32 rtk_parse_config_file(RT_U8* config_buf, size_t filelen, char bt_addr[6])
   for (i=0; i<config_len;) {
     switch(le16_to_cpu(entry->offset)) {
       case 0x3c:
+      {
           int j=0;
           for (j=0; j<entry->entry_len; j++)
             entry->entry_data[j] = bt_addr[entry->entry_len - 1 - j];
+      }
           break;
       case 0xc:
 #ifdef BAUDRATE_4BYTES
@@ -1544,7 +1546,7 @@ static void rtk_write_btmac2file(char bt_addr[6])
 {
   int fd;
   mkdir(BT_ADDR_DIR, 0777);
-  fd = open(BT_ADDR_FILE, O_CREAT|O_RDWR|O_TRUNC);
+  fd = open(BT_ADDR_FILE, O_CREAT|O_RDWR|O_TRUNC, 0666);
 
   if(fd > 0) {
     chmod(BT_ADDR_FILE, 0666);
