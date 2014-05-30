@@ -42,7 +42,7 @@
 #include <fcntl.h>
 
 #include <signal.h>
-#define Config_Android 1 /*1 for android; 0 for Linux*/
+#define Config_Android 0 /*1 for android; 0 for Linux*/
 
 #if Config_Android   //for Android
 #include <bluetooth/bluetooth.h>
@@ -75,8 +75,8 @@
 #endif
 typedef unsigned char		RT_U8,   *PRT_U8;
 typedef unsigned short		RT_U16,  *PRT_U16;
-typedef signed int		RT_S32,  *PRT_S32;
-typedef unsigned int            RT_U32,  *PRT_U32;      //long is 32 bit,K.C
+typedef signed long		RT_S32,  *PRT_S32;
+typedef unsigned long           RT_U32,  *PRT_U32;      //long is 32 bit,K.C
 typedef signed char             RT_S8,   *PRT_S8;
 
 //log related
@@ -206,8 +206,8 @@ int gFinalSpeed = 0;
 #if Config_Android //for Android
 #define FIRMWARE_DIRECTORY_OLD "/system/etc/firmware/rtl8723as/"
 #define BT_CONFIG_DIRECTORY_OLD "/system/etc/firmware/rtl8723as/"
-#define FIRMWARE_DIRECTORY "/system/etc/firmware/bt/"
-#define BT_CONFIG_DIRECTORY "/system/etc/firmware/bt/"
+#define FIRMWARE_DIRECTORY "/system/etc/firmware/rtlbt/"
+#define BT_CONFIG_DIRECTORY "/system/etc/firmware/rtlbt/"
 
 #else //for Linux 
 #define FIRMWARE_DIRECTORY_OLD "/system/etc/firmware/rtl8723as/"
@@ -1489,11 +1489,9 @@ RT_U32 rtk_parse_config_file(RT_U8* config_buf, size_t filelen, char bt_addr[6])
   for (i=0; i<config_len;) {
     switch(le16_to_cpu(entry->offset)) {
       case 0x3c:
-      {
           int j=0;
           for (j=0; j<entry->entry_len; j++)
             entry->entry_data[j] = bt_addr[entry->entry_len - 1 - j];
-      }
           break;
       case 0xc:
 #ifdef BAUDRATE_4BYTES
@@ -1546,7 +1544,7 @@ static void rtk_write_btmac2file(char bt_addr[6])
 {
   int fd;
   mkdir(BT_ADDR_DIR, 0777);
-  fd = open(BT_ADDR_FILE, O_CREAT|O_RDWR|O_TRUNC, 0666);
+  fd = open(BT_ADDR_FILE, O_CREAT|O_RDWR|O_TRUNC);
 
   if(fd > 0) {
     chmod(BT_ADDR_FILE, 0666);
