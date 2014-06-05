@@ -47,7 +47,6 @@
 #include <bluetooth/hci_lib.h>
 
 #include "hciattach.h"
-#include "compat.h"
 
 struct uart_t {
 	char *type;
