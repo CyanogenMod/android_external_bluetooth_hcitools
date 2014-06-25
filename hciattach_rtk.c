@@ -75,8 +75,8 @@
 #endif
 typedef unsigned char		RT_U8,   *PRT_U8;
 typedef unsigned short		RT_U16,  *PRT_U16;
-typedef signed long		RT_S32,  *PRT_S32;
-typedef unsigned long           RT_U32,  *PRT_U32;      //long is 32 bit,K.C
+typedef signed int		RT_S32,  *PRT_S32;
+typedef unsigned int            RT_U32,  *PRT_U32;      //long is 32 bit,K.C
 typedef signed char             RT_S8,   *PRT_S8;
 
 //log related
