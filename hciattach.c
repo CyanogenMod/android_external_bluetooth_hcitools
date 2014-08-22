@@ -336,8 +336,16 @@ static int bcm43xx(int fd, struct uart_t *u, struct termios *ti)
 //add realtek Bluetooth init and post function.
 static int realtek_init(int fd, struct uart_t *u, struct termios *ti)
 {
+	int ret;
+
 	fprintf(stderr, "Realtek Bluetooth init uart with init speed:%d, final_speed:%d, type:HCI UART %s\n", u->init_speed, u->speed, (u->proto == HCI_UART_H4)? "H4":"H5" );
-	return rtk_init(fd, u->proto, u->speed, ti);
+	ret = rtk_init(fd, u->proto, u->speed, ti);
+	if (ret > 0) {
+		u->speed = ret;
+		ret = 0;
+	}
+
+	return ret;
 }
 
 static int realtek_post(int fd, struct uart_t *u, struct termios *ti)
