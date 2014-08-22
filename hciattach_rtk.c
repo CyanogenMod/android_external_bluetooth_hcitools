@@ -2463,6 +2463,10 @@ int rtk_init(int fd, int proto, int speed, struct termios *ti)
   if (ret)
     return -1;
 
+  /* Force H5 unsync, a new session will be started by kernel */
+  h5_tshy_sig_alarm(0);
+  usleep(100000);
+
   return gFinalSpeed;
 }
 
