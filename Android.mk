@@ -13,7 +13,7 @@ LOCAL_MODULE := hciconfig
 LOCAL_SRC_FILES := hciconfig.c csr.c
 LOCAL_SRC_FILES += lib/bluetooth.c lib/hci.c lib/sdp.c
 LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/lib
-LOCAL_MODULE_TAGS := userdebug eng
+LOCAL_MODULE_TAGS := optional
 include $(BUILD_EXECUTABLE)
 
 include $(CLEAR_VARS)
@@ -29,7 +29,7 @@ LOCAL_SRC_FILES := monitor/main.c monitor/mainloop.c \
 LOCAL_SRC_FILES += lib/bluetooth.c lib/hci.c lib/sdp.c
 LOCAL_CFLAGS += -DVERSION=\"5.10\"
 LOCAL_C_INCLUDES := $(KERNEL_HEADERS) $(LOCAL_PATH)/lib
-LOCAL_MODULE_TAGS := userdebug eng
+LOCAL_MODULE_TAGS := optional
 include $(BUILD_EXECUTABLE)
 
 include $(CLEAR_VARS)
