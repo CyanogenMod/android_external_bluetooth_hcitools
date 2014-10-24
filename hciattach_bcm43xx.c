@@ -355,7 +355,7 @@ static int bcm43xx_sleep_mode(int fd)
 {
 	unsigned char resp[CC_MIN_SIZE];
 	unsigned char cmd[] = { HCI_COMMAND_PKT, 0x27, 0xfc, 0x0c,
-				0x01, /* uart = 1 */
+				0x01, /* uart(1) */
 				0x01, /* bt sleep timeout */
 				0x01, /* host sleep timeout */
 				0x01, /* bt wake, active high */
@@ -390,6 +390,103 @@ static int bcm43xx_sleep_mode(int fd)
 	}
 
 	return 0;
+}
+
+static int bcm43xx_sco_config(int fd)
+{
+	unsigned char resp[CC_MIN_SIZE];
+	unsigned char cmd[] = { HCI_COMMAND_PKT, 0x1c, 0xfc, 0x05,
+				0x00, /* routing PCM(0)*/
+				0x04, /* bit clock rate */
+				0x00, /* Frame type short(0) long(1) */
+				0x00, /* sync mode slave(0) master(1) */
+				0x00 }; /* clock mode slave(0) master(1) */
+	
+	tcflush(fd, TCIOFLUSH);
+
+	if (write(fd, cmd, sizeof(cmd)) != sizeof(cmd)) {
+		fprintf(stderr, "Failed to write sco config\n");
+		return -1;
+	}
+	
+	if (read_hci_event(fd, resp, sizeof(resp)) < CC_MIN_SIZE) {
+		fprintf(stderr, "Failed to write sco config,\
+			invalid HCI event\n");
+		return -1;
+	}
+
+	if (resp[4] != cmd[1] || resp[5] != cmd[2] || resp[6] != CMD_SUCCESS) {
+		fprintf(stderr, "Failed to write sco config,\
+			command failure\n");
+		return -1;
+	}
+
+	return 0;
+}
+
+static int bcm43xx_pcm_data_config(int fd)
+{
+	unsigned char resp[CC_MIN_SIZE];
+	unsigned char cmd[] = { HCI_COMMAND_PKT, 0x1e, 0xfc, 0x05,
+				0x00, /* msb(0) lsb(1) first */
+				0x00, /* fill value */
+				0x03, /* fill method*/
+				0x03, /* fill num */
+				0x00 }; /* justify left(0) right(1) */
+
+	if (write(fd, cmd, sizeof(cmd)) != sizeof(cmd)) {
+		fprintf(stderr, "Failed to write pcm data config\n");
+		return -1;
+	}		
+
+	if (read_hci_event(fd, resp, sizeof(resp)) < CC_MIN_SIZE) {
+		fprintf(stderr, "Failed to write pcm data config,\
+			invalid HCI event\n");
+		return -1;
+	}
+
+	if (resp[4] != cmd[1] || resp[5] != cmd[2] || resp[6] != CMD_SUCCESS) {
+		fprintf(stderr, "Failed to write pcm data config,\
+			command failure\n");
+	}
+
+	return 0;
+}
+
+static int bcm43xx_pcm_config(int fd)
+{
+	unsigned char resp[CC_MIN_SIZE];
+	unsigned char cmd[] = { HCI_COMMAND_PKT, 0x6d, 0xfc, 0x04,
+				0x01, /* enable */
+				0x00, /* role slave(0) master(1) */
+				0x00, /* sample rate 8/16/4 khz*/
+				0x04 }; /* clock rate */
+
+	tcflush(fd, TCIOFLUSH);
+
+	printf("Configure PCM interface\n");
+
+	if (write(fd, cmd, sizeof(cmd)) != sizeof(cmd)) {
+		fprintf(stderr, "Failed to write pcm config\n");
+		return -1;
+	}		
+
+	if (read_hci_event(fd, resp, sizeof(resp)) < CC_MIN_SIZE) {
+		fprintf(stderr, "Failed to write pcm config,\
+			invalid HCI event\n");
+		return -1;
+	}
+
+	if (resp[4] != cmd[1] || resp[5] != cmd[2] || resp[6] != CMD_SUCCESS) {
+		fprintf(stderr, "Failed to write pcm config,\
+			command failure\n");
+		return -1;
+	}
+	
+	if (bcm43xx_sco_config(fd))
+		return -1;
+
+	return bcm43xx_pcm_data_config(fd);
 }
 
 int bcm43xx_init(int fd, int def_speed, int speed, struct termios *ti,
@@ -430,6 +527,8 @@ int bcm43xx_init(int fd, int def_speed, int speed, struct termios *ti,
 
 	if (pm)
 		bcm43xx_sleep_mode(fd);
+
+	bcm43xx_sco_config(fd);
 
 	if (bcm43xx_set_speed(fd, ti, speed))
 		return -1;
