@@ -351,8 +351,49 @@ static int bcm43xx_locate_patch(const char *dir_name,
 	return ret;
 }
 
+static int bcm43xx_sleep_mode(int fd)
+{
+	unsigned char resp[CC_MIN_SIZE];
+	unsigned char cmd[] = { HCI_COMMAND_PKT, 0x27, 0xfc, 0x0c,
+				0x01, /* uart = 1 */
+				0x01, /* bt sleep timeout */
+				0x01, /* host sleep timeout */
+				0x01, /* bt wake, active high */
+				0x01, /* host wake, active high */
+				0x01, /* sleep during sco */
+				0x01, /* request for sleep */
+				0x00, /* fixed */
+				0x00, /* fixed */
+				0x00, /* fixed */
+				0x00, /* fixed */
+				0x00 }; /* fixed */
+
+	printf("Configure sleep mode\n");
+
+	tcflush(fd, TCIOFLUSH);
+
+	if (write(fd, cmd, sizeof(cmd)) != sizeof(cmd)) {
+		fprintf(stderr, "Failed to write sllleep mode\n");
+		return -1;
+	}
+
+	if (read_hci_event(fd, resp, sizeof(resp)) < CC_MIN_SIZE) {
+		fprintf(stderr, "Failed to write sleep mode,\
+			invalid HCI event\n");
+		return -1;
+	}
+
+	if (resp[4] != cmd[1] || resp[5] != cmd[2] || resp[6] != CMD_SUCCESS) {
+		fprintf(stderr, "Failed to write sleep mode,\
+			command failure\n");
+		return -1;
+	}
+
+	return 0;
+}
+
 int bcm43xx_init(int fd, int def_speed, int speed, struct termios *ti,
-		const char *bdaddr)
+		const char *bdaddr, int pm)
 {
 	char chip_name[20];
 	char fw_path[PATH_MAX];
@@ -386,6 +427,9 @@ int bcm43xx_init(int fd, int def_speed, int speed, struct termios *ti,
 
 	if (bdaddr)
 		bcm43xx_set_bdaddr(fd, bdaddr);
+
+	if (pm)
+		bcm43xx_sleep_mode(fd);
 
 	if (bcm43xx_set_speed(fd, ti, speed))
 		return -1;

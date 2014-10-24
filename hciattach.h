@@ -59,7 +59,7 @@ int ath3k_post(int fd, int pm);
 int qualcomm_init(int fd, int speed, struct termios *ti, const char *bdaddr);
 int intel_init(int fd, int init_speed, int *speed, struct termios *ti);
 int bcm43xx_init(int fd, int def_speed, int speed, struct termios *ti,
-		const char *bdaddr);
+		const char *bdaddr, int pm);
 
 //Realtek_add_start
 //add realtek init and post process for realtek Bluetooth chip

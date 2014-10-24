@@ -329,7 +329,7 @@ static int intel(int fd, struct uart_t *u, struct termios *ti)
 
 static int bcm43xx(int fd, struct uart_t *u, struct termios *ti)
 {
-	return bcm43xx_init(fd, u->init_speed, u->speed, ti, u->bdaddr);
+	return bcm43xx_init(fd, u->init_speed, u->speed, ti, u->bdaddr, u->pm);
 }
 
 //Realtek_add_start
@@ -1156,7 +1156,7 @@ struct uart_t uart[] = {
 
 	/* Broadcom BCM43XX */
 	{ "bcm43xx",    0x0000, 0x0000, HCI_UART_H4,   115200, 3000000,
-				FLOW_CTL, DISABLE_PM, NULL, bcm43xx, NULL  },
+				FLOW_CTL, ENABLE_PM, NULL, bcm43xx, NULL  },
 
 	{ "ath3k",    0x0000, 0x0000, HCI_UART_ATH3K, 115200, 115200,
 			FLOW_CTL, DISABLE_PM, NULL, ath3k_ps, ath3k_pm  },
