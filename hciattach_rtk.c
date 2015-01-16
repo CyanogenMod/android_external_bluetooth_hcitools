@@ -2452,13 +2452,22 @@ DOWNLOAD_FW:
 int rtk_init(int fd, int proto, int speed, struct termios *ti)
 {
   struct sigaction sa;
-  int retlen;
+  int ret;
   RS_DBG("Realtek hciattach version %s \n",RTK_VERSION);
 
   if (proto == HCI_UART_3WIRE) {//h4 will do nothing for init
     rtk_init_h5(fd, ti);
   }
-  return rtk_config(fd, proto, speed, ti);
+
+  ret = rtk_config(fd, proto, speed, ti);
+  if (ret)
+    return -1;
+
+  /* Force H5 unsync, a new session will be started by kernel */
+  h5_tshy_sig_alarm(0);
+  usleep(100000);
+
+  return gFinalSpeed;
 }
 
 /**
@@ -2471,8 +2480,5 @@ int rtk_init(int fd, int proto, int speed, struct termios *ti)
 */
 int rtk_post(int fd, int proto, struct termios *ti)
 {
-  if (gFinalSpeed) {
-    return set_speed(fd, ti, gFinalSpeed);
-  }
   return 0;
 }
